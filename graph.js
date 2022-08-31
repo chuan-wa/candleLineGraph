@@ -227,6 +227,7 @@ var CandleGraph = {
         //
         yAixsValue = []
         ctx.strokeStyle = "grey"
+        ctx.fillStyle="black"
         for (var i = 0; i <= subDensity; i++) {
             yAixsValue[i] = i * maxVolume / subDensity
             drawLine([-xAxisUnit / 2, subdisplayYAixs * (1 - i / subDensity)], [-xAxisUnit / 2 + displayXAixs, subdisplayYAixs * (1 - i / subDensity)])
@@ -245,7 +246,7 @@ var CandleGraph = {
 
 
 
-        //#########
+        //########
         function interact() {
             function isInMainAfter() {
                 return !(mouse.x < 0 || mouse.x >= displayXAixs || mouse.y < 0 || mouse.y > displayYAixs)
@@ -293,16 +294,16 @@ var CandleGraph = {
                     ctx.fillStyle = "black"
                     let tempInfo = transformYAxisToYValue(mouse.y, 0, yAxisUnit, maxValue)
                     //width of M is similar to any number's height
-                    ctx.fillRect(-padding[0] - 4, mouse.y - 1 / 2 * ctx.measureText("M").width - 8, ctx.measureText(tempInfo).width + 8, 1 / 2 * ctx.measureText("M").width + 12)
+                    ctx.fillRect(-padding[0] - 4-xAxisUnit/2, mouse.y - 1 / 2 * ctx.measureText("M").width - 8, ctx.measureText(tempInfo).width + 8, 1 / 2 * ctx.measureText("M").width + 12)
                     ctx.fillStyle = "white"
-                    ctx.fillText(tempInfo, -padding[0], mouse.y)
+                    ctx.fillText(tempInfo, -padding[0]-xAxisUnit/2, mouse.y)
                 }
                 if (isInSubBefore()) {
                     ctx.fillStyle = "black"
                     let tempInfo = transformYAxisToYValue(mouse.y, displayYAixs + padding[2] + padding[3], subyAxisUnit, maxVolume)
-                    ctx.fillRect(-padding[0] - 4, mouse.y - 1 / 2 * ctx.measureText("M").width - 8, ctx.measureText(tempInfo).width + 8, 1 / 2 * ctx.measureText("M").width + 12)
+                    ctx.fillRect(-padding[0] - 4-xAxisUnit/2, mouse.y - 1 / 2 * ctx.measureText("M").width - 8, ctx.measureText(tempInfo).width + 8, 1 / 2 * ctx.measureText("M").width + 12)
                     ctx.fillStyle = "white"
-                    ctx.fillText(tempInfo, -padding[0], mouse.y)
+                    ctx.fillText(tempInfo, -padding[0]-xAxisUnit/2, mouse.y)
                 }
 
             }
