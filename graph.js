@@ -1,15 +1,14 @@
-const { move } = require("fs-extra");
-const { fromPairs } = require("lodash")
-const { maxValue, minValue } = require("./minData")
-
 var mouse = {
     x: undefined,
     y: undefined
 };
-var lastClick = {
-    x: undefined,
-    y: undefined
+var lastClick={
+    x:undefined,
+    y:undefined
 }
+var i=document.getElementById("menu").style
+
+
 var CandleGraph = {
     options: {
         padding: [50, 10, 30, 10], //left right top bottom
@@ -29,7 +28,7 @@ var CandleGraph = {
         maxPrice: "high",
         minPrice: "low",
         volume: "volume",
-        openInterest:"openInterest",
+        openInterest: "openInterest",
         rectInterval: 0.4,
         canvasID: "candleCanvas",
         isMinute: true,
@@ -48,13 +47,13 @@ var CandleGraph = {
     xAxisUnit: 1,
     showCross: false,
     showCrossBefore: false,
-    showMenu: false,
+
     isDrag: false,
-    touchMenu: false,
-    isLocated:false,
-    showVolume:true,
-    showRepo:false,
-    clickMenu:false,
+
+    isLocated: false,
+    showVolume: true,
+    showRepo: false,
+
     tempdataEnd: 0,
     dataNumTotal: 0,
     origin: [0, 0],
@@ -69,7 +68,7 @@ var CandleGraph = {
     draw: function () {
         //define inside variable
         let { xAxisUnit, wordYAixsChange, c, ctx, origin } = this
-        let { openInterest,dataEnd, dataNumShown, subyAxisFactor, subDensity, volume, rectInterval, padding, xPixel, yPixel, mainxAxisFactor, mainyAxisFactor, mainDensity, canvasID, openPrice, closePrice, maxPrice, minPrice, PATH, date, elementList, ELPostion, isMinute, timeLineAndInterval, time, fallColor, riseColor } = this.options
+        let { openInterest, dataEnd, dataNumShown, subyAxisFactor, subDensity, volume, rectInterval, padding, xPixel, yPixel, mainxAxisFactor, mainyAxisFactor, mainDensity, canvasID, openPrice, closePrice, maxPrice, minPrice, PATH, date, elementList, ELPostion, isMinute, timeLineAndInterval, time, fallColor, riseColor } = this.options
         try {
             this.c = document.getElementById(canvasID)
             c = this.c
@@ -240,55 +239,54 @@ var CandleGraph = {
         ctx.save()
         ctx.translate(0, displayYAixs + padding[3] + padding[2])
 
-        if(this.showVolume==true){
+        if (this.showVolume == true) {
             var maxVolume = Math.max(...selectedData.map(o => o[volume]))
-        //leave blank space
-        maxVolume += maxVolume / 10
-        //
-        yAixsValue = []
-        ctx.strokeStyle = "grey"
-        ctx.fillStyle = "black"
-        for (var i = 0; i <= subDensity; i++) {
-            yAixsValue[i] = i * maxVolume / subDensity
-            drawLine([-xAxisUnit / 2, subdisplayYAixs * (1 - i / subDensity)], [-xAxisUnit / 2 + displayXAixs, subdisplayYAixs * (1 - i / subDensity)])
-            ctx.fillText(yAixsValue[i], -xAxisUnit / 2 - padding[0], subdisplayYAixs * (1 - i / subDensity) + wordYAixsChange)
-        }
+            //leave blank space
+            maxVolume += maxVolume / 10
+            //
+            yAixsValue = []
+            ctx.strokeStyle = "grey"
+            ctx.fillStyle = "black"
+            for (var i = 0; i <= subDensity; i++) {
+                yAixsValue[i] = i * maxVolume / subDensity
+                drawLine([-xAxisUnit / 2, subdisplayYAixs * (1 - i / subDensity)], [-xAxisUnit / 2 + displayXAixs, subdisplayYAixs * (1 - i / subDensity)])
+                ctx.fillText(yAixsValue[i], -xAxisUnit / 2 - padding[0], subdisplayYAixs * (1 - i / subDensity) + wordYAixsChange)
+            }
 
-        var subyAxisUnit = subdisplayYAixs / maxVolume
-        for (const value of selectedData) {
-            if (value[openPrice] <= value[closePrice]) { ctx.fillStyle = riseColor, ctx.strokeStyle = riseColor }
-            if (value[openPrice] > value[closePrice]) { ctx.fillStyle = fallColor, ctx.strokeStyle = fallColor }
-            ctx.fillRect((count - (1 - rectInterval) / 2) * xAxisUnit, (maxVolume) * subyAxisUnit, xAxisUnit * (1 - rectInterval), -value[volume] * subyAxisUnit)
-            count++
+            var subyAxisUnit = subdisplayYAixs / maxVolume
+            for (const value of selectedData) {
+                if (value[openPrice] <= value[closePrice]) { ctx.fillStyle = riseColor, ctx.strokeStyle = riseColor }
+                if (value[openPrice] > value[closePrice]) { ctx.fillStyle = fallColor, ctx.strokeStyle = fallColor }
+                ctx.fillRect((count - (1 - rectInterval) / 2) * xAxisUnit, (maxVolume) * subyAxisUnit, xAxisUnit * (1 - rectInterval), -value[volume] * subyAxisUnit)
+                count++
+            }
         }
-        }
-        if(this.showRepo==true){
+        if (this.showRepo == true) {
             var maxOpenInterest = Math.max(...selectedData.map(o => o[openInterest]))
-            var minOpenInterest = Math.min(...selectedData.map(o=>o[openInterest]))
-        //leave blank space
-        console.log(maxOpenInterest)
-        console.log(minOpenInterest)
+            var minOpenInterest = Math.min(...selectedData.map(o => o[openInterest]))
+            //leave blank space
 
 
-        //
-        yAixsValue = []
-        ctx.strokeStyle = "grey"
-        ctx.fillStyle = "black"
-        for (var i = 0; i <= subDensity; i++) {
-            yAixsValue[i] = i * (maxOpenInterest-minOpenInterest) / subDensity+minOpenInterest
-            drawLine([-xAxisUnit / 2, subdisplayYAixs * (1 - i / subDensity)], [-xAxisUnit / 2 + displayXAixs, subdisplayYAixs * (1 - i / subDensity)])
-            ctx.fillText(yAixsValue[i], -xAxisUnit / 2 - padding[0], subdisplayYAixs * (1 - i / subDensity) + wordYAixsChange)
-        }
 
-        var subyAxisUnit = subdisplayYAixs / (maxOpenInterest-minOpenInterest)
+            //
+            yAixsValue = []
+            ctx.strokeStyle = "grey"
+            ctx.fillStyle = "black"
+            for (var i = 0; i <= subDensity; i++) {
+                yAixsValue[i] = i * (maxOpenInterest - minOpenInterest) / subDensity + minOpenInterest
+                drawLine([-xAxisUnit / 2, subdisplayYAixs * (1 - i / subDensity)], [-xAxisUnit / 2 + displayXAixs, subdisplayYAixs * (1 - i / subDensity)])
+                ctx.fillText(yAixsValue[i], -xAxisUnit / 2 - padding[0], subdisplayYAixs * (1 - i / subDensity) + wordYAixsChange)
+            }
 
-        for (const value of selectedData) {
-            if(count==0){ctx.beginPath(),ctx.moveTo(count*xAxisUnit-xAxisUnit/2,-(value[openInterest]-minOpenInterest)*subyAxisUnit+subdisplayYAixs)}
-            ctx.lineTo(count*xAxisUnit-xAxisUnit/2,-(value[openInterest]-minOpenInterest)*subyAxisUnit+subdisplayYAixs)
-            ctx.stroke()
-            count++
-        }
-        count=0
+            var subyAxisUnit = subdisplayYAixs / (maxOpenInterest - minOpenInterest)
+
+            for (const value of selectedData) {
+                if (count == 0) { ctx.beginPath(), ctx.moveTo(count * xAxisUnit - xAxisUnit / 2, -(value[openInterest] - minOpenInterest) * subyAxisUnit + subdisplayYAixs) }
+                ctx.lineTo(count * xAxisUnit - xAxisUnit / 2, -(value[openInterest] - minOpenInterest) * subyAxisUnit + subdisplayYAixs)
+                ctx.stroke()
+                count++
+            }
+            count = 0
         }
         this.origin = [-padding[0] - xAxisUnit / 2, -displayYAixs - 2 * padding[2] - padding[3]]
         origin = this.origin
@@ -301,7 +299,7 @@ var CandleGraph = {
         //########
         function interact() {
             function isInMainAfter() {
-                return !(mouse.x < 0 || mouse.x >= displayXAixs || mouse.y < 0 || mouse.y > displayYAixs)
+                return !(mouse.x < xAxisUnit || mouse.x >= displayXAixs+xAxisUnit || mouse.y < 0 || mouse.y > displayYAixs)
             }
 
             function isInSubBefore() {
@@ -317,14 +315,6 @@ var CandleGraph = {
                 mouse.y -= c.getBoundingClientRect().top + padding[2]
             }
 
-            //不变化，只需要改变一次
-            function locatedLastClickAxis(){
-                if(_self.isLocated==true)return
-                lastClick.x -= c.getBoundingClientRect().left + padding[0] + xAxisUnit / 2
-                lastClick.y -= c.getBoundingClientRect().top + padding[2]
-                _self.isLocated=true
-            }
-
             function translateMouseAxis() {
 
                 if (mouse.x % xAxisUnit < xAxisUnit / 2) { mouse.x = Math.floor((mouse.x / xAxisUnit)) * xAxisUnit }
@@ -334,7 +324,7 @@ var CandleGraph = {
             function drawCrossLine() {
                 ctx.strokeStyle = "grey"
                 ctx.setLineDash([1, 2])
-                drawLine([0, mouse.y], [displayXAixs, mouse.y])
+                drawLine([-xAxisUnit/2, mouse.y], [displayXAixs-xAxisUnit/2, mouse.y])
                 drawLine([mouse.x, 0], [mouse.x, displayYAixs + padding[2] + padding[3] + subdisplayYAixs])
                 ctx.setLineDash([1, 0])
             }
@@ -363,8 +353,11 @@ var CandleGraph = {
                     ctx.fillText(tempInfo, -padding[0] - xAxisUnit / 2, mouse.y)
                 }
                 if (isInSubBefore()) {
+                    let max1=0
+                    if(_self.showRepo==true)max1=maxOpenInterest
+                    else max1=maxVolume
                     ctx.fillStyle = "black"
-                    let tempInfo = transformYAxisToYValue(mouse.y, displayYAixs + padding[2] + padding[3], subyAxisUnit, maxVolume)
+                    let tempInfo = transformYAxisToYValue(mouse.y, displayYAixs + padding[2] + padding[3], subyAxisUnit, max1)
                     ctx.fillRect(-padding[0] - 4 - xAxisUnit / 2, mouse.y - 1 / 2 * ctx.measureText("M").width - 8, ctx.measureText(tempInfo).width + 8, 1 / 2 * ctx.measureText("M").width + 12)
                     ctx.fillStyle = "white"
                     ctx.fillText(tempInfo, -padding[0] - xAxisUnit / 2, mouse.y)
@@ -394,6 +387,7 @@ var CandleGraph = {
                 ctx.strokeRect(x, y, dx, dy)
                 ctx.translate(x, y)
                 var numOfSample = Math.floor(mouse.x / xAxisUnit)
+                console.log(mouse.x)
                 var value = selectedData[numOfSample]
                 ctx.fillStyle = "black"
                 ctx.font = "15px sans-serif"
@@ -420,98 +414,35 @@ var CandleGraph = {
                 ctx.translate(-x, -y)
 
             }
-            if(typeof lastClick.x !== "undefined"){
-                var bdx=50,bdy=30
-                var button1XY = [[lastClick.x, lastClick.y], [lastClick.x + bdx, lastClick.y + bdy]]
-                var button2XY = [[lastClick.x, lastClick.y + bdy], [lastClick.x + bdx, lastClick.y + 2 * bdy]]
+            ctx.translate(origin[0], origin[1])
+            ctx.translate(padding[0] + xAxisUnit / 2, padding[2])
+            locatedMouseAxis()
+            translateMouseAxis()
+
+            if (mouse.x <= 0 || mouse.x >= displayXAixs || mouse.y <= 0 || (mouse.y >= displayYAixs && mouse.y <= displayYAixs + padding[2] + padding[3]) || mouse.y > displayYAixs + padding[2] + padding[3] + subdisplayYAixs) {
+                ctx.translate(0, displayYAixs + padding[3] + padding[2])
+                return
             }
-            
-
-            function drawMenu() {
-
-                ctx.fillStyle = "pink"
-                
-                
-                if (mouse.x < button1XY[1][0] && mouse.x > button1XY[0][0] && mouse.y > button1XY[0][1] && mouse.y < button1XY[1][1]) {
-                    ctx.fillStyle = "grey"
-                }
-                ctx.fillRect(lastClick.x, lastClick.y, bdx, bdy)
-                ctx.strokeRect(lastClick.x, lastClick.y, bdx, bdy)
-                ctx.fillStyle = "pink"
-                if (mouse.x < button2XY[1][0] && mouse.x > button2XY[0][0] && mouse.y > button2XY[0][1] && mouse.y < button2XY[1][1]) {
-                    ctx.fillStyle = "grey"
-                }
-                ctx.fillRect(lastClick.x, lastClick.y + bdy, bdx, bdy)
-                ctx.strokeRect(lastClick.x, lastClick.y + bdy, bdx, bdy)
-                ctx.fillStyle = "blue"
-                ctx.fillText("持仓线图", lastClick.x, lastClick.y + bdy / 2)
-                ctx.fillText("交易量图", lastClick.x, lastClick.y + bdy + bdy / 2)
-                
-
-
-            }
-
-
-
-
-
-
-
-            if (mouse.x < 0 || mouse.x >= displayXAixs || mouse.y <= 0 || (mouse.y >= displayYAixs && mouse.y <= displayYAixs + padding[2] + padding[3]) || mouse.y > displayYAixs + padding[2] + padding[3] + subdisplayYAixs) return
 
             //right click show menu
 
-            if(_self.clickMenu==true){
-                ctx.translate(origin[0], origin[1])
-                ctx.translate(padding[0] + xAxisUnit / 2, padding[2])
-                locatedMouseAxis()
-                console.log(mouse.x < button1XY[1][0] && mouse.x > button1XY[0][0] && mouse.y > button1XY[0][1] && mouse.y < button1XY[1][1])
-                
-                if (mouse.x < button1XY[1][0] && mouse.x > button1XY[0][0] && mouse.y > button1XY[0][1] && mouse.y < button1XY[1][1]) {
-                    _self.showVolume=true
-                    _self.showRepo=false
-                }
-                if (mouse.x < button2XY[1][0] && mouse.x > button2XY[0][0] && mouse.y > button2XY[0][1] && mouse.y < button2XY[1][1]) {
-                    _self.showRepo=true
-                    _self.showVolume=false
-                }
-                ctx.translate(0, displayYAixs + padding[3] + padding[2])
-                return
-            }
-
-
-            if (_self.showMenu == true) {
-                ctx.translate(origin[0], origin[1])
-                ctx.translate(padding[0] + xAxisUnit / 2, padding[2])
-                locatedMouseAxis()
-                locatedLastClickAxis()
-                drawMenu()
-                translateMouseAxis()
-                // console.log(mouse)
-                ctx.translate(0, displayYAixs + padding[3] + padding[2])
-                return
-            }
-
-
+            
             //left click related functions
             if (_self.showCross == true) {
-                ctx.translate(origin[0], origin[1])
-                ctx.translate(padding[0] + xAxisUnit / 2, padding[2])
-                locatedMouseAxis()
-                translateMouseAxis()
+
+ 
                 drawCrossLine()
                 fillCrossInfo()
                 detailInfo()
-                ctx.translate(0, displayYAixs + padding[3] + padding[2])
-                return
+                
+                
+                
             }
-
-
-
+            ctx.translate(0, displayYAixs + padding[3] + padding[2])
         }
         interact()
         // console.log(_self)
-        console.log(_self.showRepo)
+
     }
 }
 
@@ -526,58 +457,53 @@ window.onload = function () {
 
 //#########################
 // related to mouse events
-function rightup(e) {
-    if (e.which == 3) {
-        lastClick.x = e.x
-        lastClick.y = e.y
-        CandleGraph.showMenu = !CandleGraph.showMenu
-        if(CandleGraph.showMenu==false){
-            CandleGraph.isLocated=false
-            removeEventListener("mousemove",moveOnMenu)
-        }
-        CandleGraph.draw()
-        addEventListener("mousemove", moveOnMenu)
-        removeEventListener("mouseup", rightup)
-
-    }
+document.getElementById("volume").addEventListener("click",showVolume)
+document.getElementById("repo").addEventListener("click",showRepo)
+function showVolume(){
+    CandleGraph.showVolume=true
+    CandleGraph.showRepo=false
+    hiddenMenu()
+    CandleGraph.draw()
 }
 
-function moveOnMenu(e) {
-
-    mouse.x = e.x
-    mouse.y = e.y
+function showRepo(){
+    CandleGraph.showRepo=true
+    CandleGraph.showVolume=false
+    hiddenMenu()
     CandleGraph.draw()
+}
+
+function hiddenMenu(){
+    i.visibility="hidden"
+    i.opacity="0"
+}
+
+function showMenu(x,y){
+    i.left=x+"px"
+    i.top=y+"px"
+    i.visibility="visible"
+    i.opacity="1"
 }
 
 function down(e) {
     // console.log("down")
-    mouse.x = e.x
-    mouse.y = e.y
+    lastClick.x = e.x
+    lastClick.y = e.y
+
+    if(i.visibility==="visible"){
+        hiddenMenu()
+        return
+    }
     //left down
     if (e.which == 1) {
-        if (CandleGraph.showMenu == true) {
-            CandleGraph.clickMenu=true
-            CandleGraph.showMenu = false
-            CandleGraph.isLocated=false
-            removeEventListener("mousemove",moveOnMenu)
-            CandleGraph.draw()
-            CandleGraph.clickMenu=false
-            CandleGraph.draw()
-        }else{
-            if (CandleGraph.showCross == true) {
-                removeEventListener("mousemove", cross)
-                CandleGraph.showCross = false
-                CandleGraph.showCrossBefore = true
-            }
-            addEventListener("mousemove", drag)
-            addEventListener("mouseup", leftup)
+        if (CandleGraph.showCross == true) {
+            removeEventListener("mousemove", cross)
+            CandleGraph.showCross = false
+            CandleGraph.showCrossBefore = true
         }
-
-
-
-            // console.log("close")
-        
-
+        addEventListener("mousemove", drag)
+        addEventListener("mouseup", leftup)
+        // console.log("close")
     }
     //right down
     if (e.which == 3) {
@@ -585,12 +511,18 @@ function down(e) {
     }
 }
 
+function rightup(e){
+    showMenu(e.x,e.y)
+    removeEventListener("mouseup",rightup)
+    
+}
+
 
 function drag(e) {
     // console.log("drag")
 
 
-    CandleGraph.options.dataEnd = CandleGraph.tempdataEnd + Math.round((e.x - mouse.x) / (CandleGraph.xAxisUnit))
+    CandleGraph.options.dataEnd = CandleGraph.tempdataEnd + Math.round((e.x - lastClick.x) / (CandleGraph.xAxisUnit))
     // console.log(CandleGraph.options.dataNumShown)
     if (CandleGraph.options.dataEnd > CandleGraph.dataNumTotal - CandleGraph.options.dataNumShown) CandleGraph.options.dataEnd = CandleGraph.dataNumTotal - CandleGraph.options.dataNumShown
     if (CandleGraph.options.dataEnd < 0) CandleGraph.options.dataEnd = 0
@@ -603,10 +535,11 @@ function drag(e) {
 function leftup(e) {
     // console.log("leftup")
     //console.log(Math.round((e.x-mouse.x)/(CandleGraph.xAxisUnit)))
-
+    mouse.x=e.x
+    mouse.y=e.y
 
     if (e.which == 1) {
-        if (Math.round((e.x - mouse.x) / (CandleGraph.xAxisUnit)) == 0) {
+        if (Math.round((e.x - lastClick.x) / (CandleGraph.xAxisUnit)) == 0) {
             if (CandleGraph.showCross == false) {
                 if (CandleGraph.showCrossBefore == false) {
                     CandleGraph.showCross = true
@@ -639,7 +572,6 @@ function cross(e) {
 //related to wheel events
 
 function zooming(e) {
-    if (CandleGraph.showMenu == true) CandleGraph.showMenu == false
     e.preventDefault();
     CandleGraph.options.dataNumShown += e.deltaY / 50
     if (CandleGraph.options.dataNumShown < 10) CandleGraph.options.dataNumShown = 10
@@ -651,7 +583,7 @@ function zooming(e) {
     if (CandleGraph.showCross == true) {
         CandleGraph.showCross = false
         removeEventListener("mousemove", cross)
-        console.log("close")
+
     }
     CandleGraph.draw()
 }
